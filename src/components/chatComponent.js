@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import logo from "../assets/PumpO.png"; // Ensure the PumpO logo path is correct
-import userProfile from "../assets/UserProfile.png"; // User profile image path
+import ChatMessages from "./chatMessages";
 
 const ChatComponent = () => {
   const [messages, setMessages] = useState([]); // Stores messages
@@ -31,49 +31,16 @@ Pressure Tank Function: The pressure tank stores water and maintains pressure in
   return (
     <div className="flex flex-col items-center justify-center h-full text-center bg-white p-10">
       {/* Logo */}
-      <img src={logo} alt="PumpO Logo" className="w-20 mb-8" />
-
-      {/* Chat Messages */}
-      <div className="w-full max-w-3xl h-96 overflow-y-auto rounded-lg p-4 space-y-6">
-        {messages.map((message, index) => (
-          <div
-            key={index}
-            className={`flex ${
-              message.sender === "user" ? "justify-end" : "justify-start"
-            }`}
-          >
-            {message.sender === "bot" && (
-              <div className="flex items-start space-x-3">
-                <img
-                  src={logo}
-                  alt="PumpO Logo"
-                  className="w-10 h-10 rounded-full"
-                />
-                <div className=" text-black p-4 rounded-2xl shadow-md">
-                  {message.text.split("\n").map((line, i) => (
-                    <p key={i} className="text-sm">
-                      {line}
-                    </p>
-                  ))}
-                </div>
-              </div>
-            )}
-            {message.sender === "user" && (
-              <div className="flex items-start space-x-3">
-                <div className=" p-4 rounded-2xl shadow-md">
-                  <p className="text-sm">{message.text}</p>
-                </div>
-                <img
-                  src={userProfile}
-                  alt="User Profile"
-                  className="w-10 h-10 rounded-full"
-                />
-              </div>
-            )}
-          </div>
-        ))}
-      </div>
-
+      {!messages.length ? (
+        <>
+          <img src={logo} alt="PumpO Logo" className="w-40 mb-8" />
+          <h1 className="text-2xl font-bold text-blue-900 mb-4">
+            How Can I Help You Today?
+          </h1>
+        </>
+      ) : (
+        <ChatMessages messages={messages}></ChatMessages>
+      )}
       {/* Input Section */}
       <div className="flex items-center mt-6 w-full max-w-3xl">
         <input
