@@ -5,7 +5,10 @@ import Sidebar from "./components/sidebar";
 import Dashboard from "./components/dashboard";
 import ChatComponent from "./components/chatComponent";
 import ChatSidebar from "./components/chatSidebar";
+import Analytics from './components/Analytics/analytics';
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import Monitoring from "./components/Monitoring/monitoring";
+
 import AlertDashboard from "./components/AlerDashboard";
 
 function App() {
@@ -84,7 +87,51 @@ function App() {
             </>
           }
         />
+        <Route
+          path="/analytics"
+          element={
+            <>
+              <div className="App">
+                <div className="flex h-screen bg-gray-100">
+                  <div className="flex flex-col ">
+                    <LogoFrame />
+                    <Sidebar />
+                  </div>
+
+                  <div className="flex flex-col flex-1">
+                    <Header />
+                    <Analytics/>
+                  </div>
+                </div>
+              </div>
+            </>
+          }
+        />
+        <Route
+          path="/monitoring"
+          element={
+            <>
+              <div className="App">
+                <div className="flex h-screen bg-gray-100">
+                  <div className="flex flex-col ">
+                    <LogoFrame />
+                    <Sidebar />
+                  </div>
+
+                  <div className="flex flex-col flex-1">
+                    <Header />
+                    <Monitoring/>
+                  </div>
+                </div>
+              </div>
+            </>
+          }
+        />
+        
+      
+        
       </Routes>
+      
     </Router>
   );
 }
