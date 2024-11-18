@@ -2,6 +2,7 @@ import React from "react";
 import PumpsTable from "./pumpTable";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
+import BotPump from "./BotPump";
 
 const PumpAlert = ({ selectedPump, setSelectedPump }) => {
   const hadleGoBack = () => {
@@ -91,6 +92,7 @@ const PumpAlert = ({ selectedPump, setSelectedPump }) => {
           </div>
         </div>
       </div>
+      <BotPump></BotPump>
     </div>
   );
 };
