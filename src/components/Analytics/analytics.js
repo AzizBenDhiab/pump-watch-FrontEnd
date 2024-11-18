@@ -49,7 +49,7 @@ const Analytics = () => {
               id="pump-select"
               value={selectedPump}
               onChange={(e) => setSelectedPump(e.target.value)}
-              className="w-full px-4 py-2 border border-gray-300 rounded-md bg-blue-500 text-white font-medium focus:outline-none focus:ring-2 focus:ring-blue-400 shadow-sm"
+              className="w-full px-4 py-2 border border-gray-300 rounded-md bg-[#0286CE] text-[#E6E6E6] font-medium focus:outline-none focus:ring-2 focus:ring-blue-400 shadow-sm"
             >
               {pumps.map((pump) => (
                 <option key={pump} value={pump} className="bg-blue-100 text-gray-700 ">
@@ -71,7 +71,7 @@ const Analytics = () => {
               id="duration-select"
               value={selectedDuration}
               onChange={(e) => setSelectedDuration(e.target.value)}
-              className="w-full px-4 py-2 border border-gray-300 rounded-md bg-blue-500 text-white font-medium focus:outline-none focus:ring-2 focus:ring-blue-400 shadow-sm"
+              className="w-full px-4 py-2 border border-gray-300 rounded-md bg-[#0286CE] text-[#E6E6E6] font-medium focus:outline-none focus:ring-2 focus:ring-blue-400 shadow-sm"
             >
               {durations.map((duration) => (
                 <option key={duration} value={duration} className="bg-blue-100 text-gray-700">

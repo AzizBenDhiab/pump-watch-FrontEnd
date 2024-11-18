@@ -7,6 +7,7 @@ import ChatComponent from "./components/chatComponent";
 import ChatSidebar from "./components/chatSidebar";
 import Analytics from './components/Analytics/analytics';
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import Monitoring from "./components/Monitoring/monitoring";
 
 function App() {
   return (
@@ -72,8 +73,31 @@ function App() {
             </>
           }
         />
+        <Route
+          path="/monitoring"
+          element={
+            <>
+              <div className="App">
+                <div className="flex h-screen bg-gray-100">
+                  <div className="flex flex-col ">
+                    <LogoFrame />
+                    <Sidebar />
+                  </div>
+
+                  <div className="flex flex-col flex-1">
+                    <Header />
+                    <Monitoring/>
+                  </div>
+                </div>
+              </div>
+            </>
+          }
+        />
+        
+      
         
       </Routes>
+      
     </Router>
   );
 }
