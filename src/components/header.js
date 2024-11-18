@@ -1,4 +1,6 @@
 import userProfile from "../assets/UserProfile.png"; // User profile image path
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faBell, faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons"; // Adjust faTv import if using Pro
 
 const Header = () => (
   <header className="flex items-center justify-between p-4 bg-white shadow-md border-b h-24">
@@ -10,10 +12,10 @@ const Header = () => (
     </div>
     <div className="flex items-center space-x-6">
       <button className="p-2 text-gray-600 hover:text-gray-800 text-xl">
-        🔍
+        <FontAwesomeIcon icon={faMagnifyingGlass} style={{ color: "#00000" }} />
       </button>
       <button className="p-2 text-gray-600 hover:text-gray-800 text-xl">
-        🔔
+        <FontAwesomeIcon icon={faBell} style={{ color: "#00000" }} />
       </button>
       <div className="flex items-center space-x-3">
         <img
