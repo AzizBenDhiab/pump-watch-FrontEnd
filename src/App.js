@@ -81,19 +81,7 @@ function App() {
           path="/chat"
           element={
             <>
-              <div className="App">
-                <div className="flex h-screen bg-gray-100">
-                  <div className="flex flex-col ">
-                    <LogoFrame />
-                    <ChatSidebar />
-                  </div>
-
-                  <div className="flex flex-col flex-1">
-                    <Header />
-                    <ChatComponent />
-                  </div>
-                </div>
-              </div>
+              <ChatComponent></ChatComponent>
             </>
           }
         />

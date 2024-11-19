@@ -9,10 +9,12 @@ const ChatMessages = ({ messages }) => {
           <div
             key={index}
             className={`flex ${
-              message.sender === "user" ? "justify-end" : "justify-start"
+              !(message.user.lastName === "Bot")
+                ? "justify-end"
+                : "justify-start"
             }`}
           >
-            {message.sender === "bot" && (
+            {message.user.lastName === "Bot" && (
               <div className="flex items-start space-x-3">
                 <img
                   src={logo}
@@ -28,7 +30,7 @@ const ChatMessages = ({ messages }) => {
                 </div>
               </div>
             )}
-            {message.sender === "user" && (
+            {!(message.user.lastName === "Bot") && (
               <div className="flex items-start space-x-3">
                 <div className=" p-4 rounded-2xl shadow-md">
                   <p className="text-sm">{message.text}</p>

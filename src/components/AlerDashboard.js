@@ -11,7 +11,13 @@ const AlertDashboard = () => {
   };
   const fetchFailureData = async () => {
     try {
-      const response = await fetch("http://localhost:3000/failures");
+      const response = await fetch("http://localhost:3000/failures", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+      });
       const data = await response.json();
       if (data.error) {
         console.error(data.error);

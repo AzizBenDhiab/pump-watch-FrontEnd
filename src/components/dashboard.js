@@ -6,9 +6,47 @@ import logo from "../assets/PumpO.png";
 import BotPump from "./BotPump";
 const Dashboard = () => {
   const [pumpData, setPumpData] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [plotImages, setPlotImages] = useState({});
+
+  const fetchPlotData = async () => {
+    try {
+      setLoading(true);
+      const response = await fetch(
+        `http://127.0.0.1:5000/plot_sensor_data?day=2018-04-01&quarter=1`
+      );
+      const data = await response.json();
+      if (data.error) {
+        console.error(data.error);
+        setPlotImages({});
+      } else {
+        // Transform the base64 strings into proper image URLs
+        const transformedImages = {};
+        for (const [sensor, base64Data] of Object.entries(data)) {
+          transformedImages[sensor] = `data:image/png;base64,${base64Data}`;
+        }
+        setPlotImages(transformedImages);
+      }
+    } catch (error) {
+      console.error("Error fetching plot data:", error);
+      setPlotImages({});
+    } finally {
+      setLoading(false);
+    }
+  };
+  useEffect(() => {
+    fetchPlotData();
+  }, []);
+
   const fetchFailureData = async () => {
     try {
-      const response = await fetch("http://localhost:3000/failures");
+      const response = await fetch("http://localhost:3000/failures", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+      });
       const data = await response.json();
       if (data.error) {
         console.error(data.error);
@@ -56,13 +94,30 @@ const Dashboard = () => {
         </div>
 
         {/* Charts */}
-        <div className="grid grid-cols-2 gap-4">
-          <div className="bg-white p-4 rounded-lg shadow-md">
-            <LineChart />
-          </div>
-          <div className="bg-white p-4 rounded-lg shadow-md">
-            <LineChart />
-          </div>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          {loading ? (
+            <div className="col-span-2 flex justify-center items-center h-64">
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"></div>
+            </div>
+          ) : (
+            Object.entries(plotImages)
+              .slice(0, 2) // Limit to the first two entries
+              .map(([sensor, imageData]) => (
+                <div
+                  key={sensor}
+                  className="p-4 bg-gradient-to-br from-[#E1EBFB] to-[#4E87D2] shadow-md rounded-lg"
+                >
+                  <h3 className="text-md font-medium text-gray-700 capitalize mb-2">
+                    {sensor} Historical Data
+                  </h3>
+                  <img
+                    src={imageData}
+                    alt={`${sensor} plot`}
+                    className="w-full h-auto rounded-lg"
+                  />
+                </div>
+              ))
+          )}
         </div>
 
         {/* Pumps Table */}
