@@ -10,6 +10,8 @@ L'interface utilisateur offre un tableau de bord en temps réel, des graphiques 
 **Dépôt GitHub :** [Pump Watch Frontend](https://github.com/AzizBenDhiab/pump-watch-FrontEnd)  
 
 ---
+Voici un demo
+https://drive.google.com/file/d/1xeXDrmfZY89OUAchdUp-exc47Uj3pcJM/view?usp=sharing
 
 ## Fonctionnalités  
 - **Tableau de bord en temps réel** : Visualisation des données des capteurs (température, vibrations, pression, etc.).  
