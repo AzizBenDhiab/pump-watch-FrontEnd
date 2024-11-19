@@ -1,7 +1,3 @@
-Merci pour la capture d'écran de la structure du projet ! Voici une version actualisée du fichier README qui correspond à la structure de votre projet et inclut l'URL du dépôt :
-
----
-
 # Pump Watch Frontend  
 
 [![License](https://img.shields.io/badge/license-MIT-green)](./LICENSE)  
