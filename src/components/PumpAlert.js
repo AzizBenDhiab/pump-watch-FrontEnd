@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import PumpsTable from "./pumpTable";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
@@ -8,6 +8,40 @@ const PumpAlert = ({ selectedPump, setSelectedPump }) => {
   const hadleGoBack = () => {
     setSelectedPump(null);
   };
+  const [plotImages, setPlotImages] = useState({});
+  const [loading, setLoading] = useState(false);
+  const [selectedDate, setSelectedDate] = useState("2018-04-01");
+  const [selectedQuarter, setSelectedQuarter] = useState(1);
+  const fetchPlotData = async (day, quarter) => {
+    try {
+      setLoading(true);
+      const response = await fetch(
+        `http://127.0.0.1:5000/plot_sensor_data?day=${day}&quarter=${quarter}`
+      );
+      const data = await response.json();
+      if (data.error) {
+        console.error(data.error);
+        setPlotImages({});
+      } else {
+        // Transform the base64 strings into proper image URLs
+        const transformedImages = {};
+        for (const [sensor, base64Data] of Object.entries(data)) {
+          transformedImages[sensor] = `data:image/png;base64,${base64Data}`;
+        }
+        setPlotImages(transformedImages);
+      }
+    } catch (error) {
+      console.error("Error fetching plot data:", error);
+      setPlotImages({});
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchPlotData(selectedDate, selectedQuarter);
+  }, [selectedDate, selectedQuarter, selectedPump]);
+
   return (
     <div className="bg-gray-100 min-h-screen p-8">
       {/* Header Section */}
@@ -61,34 +95,32 @@ const PumpAlert = ({ selectedPump, setSelectedPump }) => {
         <h2 className="text-lg font-semibold text-blue-800 mb-4">
           CP-12398 Monitoring (10 Nov. 2024)
         </h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className="bg-blue-100 p-4 rounded-lg shadow-sm">
-            <h3 className="text-sm font-semibold mb-2">
-              Temp. Values CP-12398 (10/11/24 - 11:21 PM)
-            </h3>
-            {/* Placeholder for Temperature Graph */}
-            <div className="h-40 bg-gray-300 rounded-lg"></div>
-          </div>
-          <div className="bg-blue-100 p-4 rounded-lg shadow-sm">
-            <h3 className="text-sm font-semibold mb-2">
-              Live Pressure Values CP-12398
-            </h3>
-            {/* Placeholder for Pressure Graph */}
-            <div className="h-40 bg-gray-300 rounded-lg"></div>
-          </div>
-          <div className="bg-blue-100 p-4 rounded-lg shadow-sm">
-            <h3 className="text-sm font-semibold mb-2">
-              Vibration Values CP-12398 (10/11/24 - 11:21 PM)
-            </h3>
-            {/* Placeholder for Vibration Graph */}
-            <div className="h-40 bg-gray-300 rounded-lg"></div>
-          </div>
-          <div className="bg-blue-100 p-4 rounded-lg shadow-sm">
-            <h3 className="text-sm font-semibold mb-2">
-              Flow Rate Values CP-12398 (10/11/24 - 11:21 PM)
-            </h3>
-            {/* Placeholder for Flow Rate Graph */}
-            <div className="h-40 bg-gray-300 rounded-lg"></div>
+        <div className="mt-6">
+          <h2 className="text-xl font-bold text-gray-800 mb-4">
+            Historical Data
+          </h2>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {loading ? (
+              <div className="col-span-2 flex justify-center items-center h-64">
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"></div>
+              </div>
+            ) : (
+              Object.entries(plotImages).map(([sensor, imageData]) => (
+                <div
+                  key={sensor}
+                  className="p-4 bg-gradient-to-br from-[#E1EBFB] to-[#4E87D2] shadow-md rounded-lg"
+                >
+                  <h3 className="text-md font-medium text-gray-700 capitalize mb-2">
+                    {sensor} Historical Data
+                  </h3>
+                  <img
+                    src={imageData}
+                    alt={`${sensor} plot`}
+                    className="w-full h-auto rounded-lg"
+                  />
+                </div>
+              ))
+            )}
           </div>
         </div>
       </div>

@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Line } from "react-chartjs-2";
-import { FiPower, FiWind, FiZap } from "react-icons/fi"; // Import icons
+import { FiPower, FiWind, FiZap, FiCalendar, FiClock } from "react-icons/fi";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -11,8 +11,17 @@ import {
   Tooltip,
   Legend,
 } from "chart.js";
+import BotPump from "../BotPump";
 
-ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend
+);
 
 const Monitoring = () => {
   const pumps = [
@@ -22,6 +31,10 @@ const Monitoring = () => {
   ];
 
   const [selectedPump, setSelectedPump] = useState(pumps[0]);
+  const [plotImages, setPlotImages] = useState({});
+  const [loading, setLoading] = useState(false);
+  const [selectedDate, setSelectedDate] = useState("2018-04-01");
+  const [selectedQuarter, setSelectedQuarter] = useState(1);
 
   const pumpData = {
     "CP-12398": {
@@ -64,31 +77,56 @@ const Monitoring = () => {
         data,
         borderColor: color,
         backgroundColor: `${color}33`,
+        tension: 0.4,
       },
     ],
   });
 
   const selectedPumpData = pumpData[selectedPump.id];
 
+  const fetchPlotData = async (day, quarter) => {
+    try {
+      setLoading(true);
+      const response = await fetch(
+        `http://127.0.0.1:5000/plot_sensor_data?day=${day}&quarter=${quarter}`
+      );
+      const data = await response.json();
+      if (data.error) {
+        console.error(data.error);
+        setPlotImages({});
+      } else {
+        // Transform the base64 strings into proper image URLs
+        const transformedImages = {};
+        for (const [sensor, base64Data] of Object.entries(data)) {
+          transformedImages[sensor] = `data:image/png;base64,${base64Data}`;
+        }
+        setPlotImages(transformedImages);
+      }
+    } catch (error) {
+      console.error("Error fetching plot data:", error);
+      setPlotImages({});
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchPlotData(selectedDate, selectedQuarter);
+  }, [selectedDate, selectedQuarter, selectedPump]);
+
+  const quarters = [
+    { value: 1, label: "00:00 - 06:00" },
+    { value: 2, label: "06:00 - 12:00" },
+    { value: 3, label: "12:00 - 18:00" },
+    { value: 4, label: "18:00 - 00:00" },
+  ];
+
   return (
     <div className="p-6 bg-gray-100 min-h-screen">
-      <div className="mb-6 flex justify-between items-center">
+      <div className="mb-6 flex flex-wrap gap-4 justify-between items-center">
         <h1 className="text-3xl font-bold text-gray-800">
           {selectedPump.name} ({selectedPump.id})
         </h1>
-        <select
-          value={selectedPump.id}
-          onChange={(e) =>
-            setSelectedPump(pumps.find((pump) => pump.id === e.target.value))
-          }
-          className="p-2 bg-[#0286CE] text-[#E6E6E6] rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 w-1/4"
-        >
-          {pumps.map((pump) => (
-            <option key={pump.id} value={pump.id}className="bg-blue-100 text-gray-700">
-              {pump.name}
-            </option>
-          ))}
-        </select>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
@@ -119,39 +157,35 @@ const Monitoring = () => {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div className="p-4 bg-gradient-to-br from-[#E1EBFB] to-[#4E87D2] shadow-md rounded-lg">
-          <h3 className="text-md font-medium text-gray-700">Live Pressure Values</h3>
-          <Line
-            data={getChartData(selectedPumpData.pressure, "Pressure (bar)", "#3b82f6")}
-            options={chartOptions}
-          />
-        </div>
-
-        <div className="p-4 bg-gradient-to-br from-[#E1EBFB] to-[#4E87D2] shadow-md rounded-lg">
-          <h3 className="text-md font-medium text-gray-700">Live Temperature Values</h3>
-          <Line
-            data={getChartData(selectedPumpData.temperature, "Temperature (°C)", "#ef4444")}
-            options={chartOptions}
-          />
-        </div>
-
-        <div className="p-4 bg-gradient-to-br from-[#E1EBFB] to-[#4E87D2] shadow-md rounded-lg">
-          <h3 className="text-md font-medium text-gray-700">Live Vibration Values</h3>
-          <Line
-            data={getChartData(selectedPumpData.vibration, "Vibration (mm/s)", "#22c55e")}
-            options={chartOptions}
-          />
-        </div>
-
-        <div className="p-4 bg-gradient-to-br from-[#E1EBFB] to-[#4E87D2] shadow-md rounded-lg">
-          <h3 className="text-md font-medium text-gray-700">Live Flow Rate Values</h3>
-          <Line
-            data={getChartData(selectedPumpData.flowRate, "Flow Rate (L/s)", "#14b8a6")}
-            options={chartOptions}
-          />
+      <div className="mt-6">
+        <h2 className="text-xl font-bold text-gray-800 mb-4">
+          Historical Data
+        </h2>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          {loading ? (
+            <div className="col-span-2 flex justify-center items-center h-64">
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"></div>
+            </div>
+          ) : (
+            Object.entries(plotImages).map(([sensor, imageData]) => (
+              <div
+                key={sensor}
+                className="p-4 bg-gradient-to-br from-[#E1EBFB] to-[#4E87D2] shadow-md rounded-lg"
+              >
+                <h3 className="text-md font-medium text-gray-700 capitalize mb-2">
+                  {sensor} Historical Data
+                </h3>
+                <img
+                  src={imageData}
+                  alt={`${sensor} plot`}
+                  className="w-full h-auto rounded-lg"
+                />
+              </div>
+            ))
+          )}
         </div>
       </div>
+      <BotPump></BotPump>
     </div>
   );
 };

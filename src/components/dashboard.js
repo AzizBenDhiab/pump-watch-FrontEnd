@@ -1,25 +1,31 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import SummaryCard from "./summaryCard";
 import LineChart from "./lineChart";
 import PumpsTable from "./pumpTable";
 import logo from "../assets/PumpO.png";
-import { useNavigate } from "react-router-dom";
 import BotPump from "./BotPump";
 const Dashboard = () => {
-  const navigate = useNavigate(); // Hook for navigation
-
-  const handleNavigation = () => {
-    navigate("/chat"); // Replace '/target-path' with your desired route
+  const [pumpData, setPumpData] = useState([]);
+  const fetchFailureData = async () => {
+    try {
+      const response = await fetch("http://localhost:3000/failures");
+      const data = await response.json();
+      if (data.error) {
+        console.error(data.error);
+        setPumpData([]);
+      } else {
+        setPumpData(data);
+      }
+    } catch (error) {
+      console.error("Error fetching failure data:", error);
+      setPumpData([]);
+    }
   };
 
-  const pumpData = [
-    { name: "Centrifugal Pump 1", id: "CP-12398", line: "1", status: "On" },
-    { name: "Centrifugal Pump 2", id: "CP-12376", line: "1", status: "On" },
-    { name: "Centrifugal Pump 1", id: "CP-12398", line: "1", status: "On" },
-    { name: "Centrifugal Pump 2", id: "CP-12376", line: "1", status: "On" },
-    { name: "Centrifugal Pump 1", id: "CP-12398", line: "1", status: "On" },
-    { name: "Centrifugal Pump 2", id: "CP-12376", line: "1", status: "On" },
-  ];
+  useEffect(() => {
+    fetchFailureData();
+    console.log(pumpData);
+  }, []);
 
   return (
     <main className="flex-1 p-8 overflow-y-auto relative">
