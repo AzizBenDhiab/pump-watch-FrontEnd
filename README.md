@@ -1,6 +1,5 @@
 # Pump Watch Frontend  
 
-[![License](https://img.shields.io/badge/license-MIT-green)](./LICENSE)  
 [![ReactJS](https://img.shields.io/badge/react-v18.0-blue)](https://reactjs.org/)  
 [![TailwindCSS](https://img.shields.io/badge/tailwind-v3.0-teal)](https://tailwindcss.com/)  
 
