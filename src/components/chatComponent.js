@@ -20,7 +20,7 @@ const ChatComponent = () => {
     const fetchConversations = async () => {
       try {
         const response = await fetch(
-          `http://localhost:3000/conversations/user`,
+          `${process.env.REACT_APP_NESTJS_API_URL}/conversations/user`,
           {
             method: "GET",
             headers: {
@@ -57,7 +57,7 @@ const ChatComponent = () => {
   const fetchMessages = async (convId) => {
     try {
       const response = await fetch(
-        `http://localhost:3000/messages/byconv/${conversationId}`,
+        `${process.env.REACT_APP_NESTJS_API_URL}/messages/byconv/${conversationId}`,
         {
           method: "GET",
           headers: {
@@ -94,18 +94,21 @@ const ChatComponent = () => {
       // POST user message to the backend
       console.log("data");
 
-      const response = await fetch("http://localhost:3000/messages", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        credentials: "include",
+      const response = await fetch(
+        `${process.env.REACT_APP_NESTJS_API_URL}/messages`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: "include",
 
-        body: JSON.stringify({
-          text: userInput,
-          conversationId, // Assuming this is set in your component state
-        }),
-      });
+          body: JSON.stringify({
+            text: userInput,
+            conversationId, // Assuming this is set in your component state
+          }),
+        }
+      );
 
       if (!response.ok) {
         throw new Error(`Error: ${response.statusText}`);
@@ -124,14 +127,17 @@ const ChatComponent = () => {
 
   const onNewChat = async () => {
     try {
-      const response = await fetch(`http://localhost:3000/conversations`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        credentials: "include",
-        body: JSON.stringify({ title }), // Send the title in the JSON body
-      });
+      const response = await fetch(
+        `${process.env.REACT_APP_NESTJS_API_URL}/conversations`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: "include",
+          body: JSON.stringify({ title }), // Send the title in the JSON body
+        }
+      );
 
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);

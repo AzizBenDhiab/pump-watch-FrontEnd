@@ -16,7 +16,7 @@ const PumpAlert = ({ selectedPump, setSelectedPump }) => {
     try {
       setLoading(true);
       const response = await fetch(
-        `http://127.0.0.1:5000/plot_sensor_data?day=${day}&quarter=${quarter}`
+        `${process.env.REACT_APP_FLASK_API_URL}/plot_sensor_data?day=${day}&quarter=${quarter}`
       );
       const data = await response.json();
       if (data.error) {

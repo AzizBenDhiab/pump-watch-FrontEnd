@@ -14,7 +14,9 @@ const SignupForm = () => {
 
   const fetchIndustries = async () => {
     try {
-      const response = await fetch("http://localhost:3000/company");
+      const response = await fetch(
+        `${process.env.REACT_APP_NESTJS_API_URL}/company`
+      );
       const data = await response.json();
       if (data.error) {
         console.error(data.error);
@@ -54,10 +56,13 @@ const SignupForm = () => {
     console.log(formData);
     // Send the request to the server
     try {
-      const response = await fetch(`http://localhost:3000/user/register`, {
-        method: "POST",
-        body: formData,
-      });
+      const response = await fetch(
+        `${process.env.REACT_APP_NESTJS_API_URL}/user/register`,
+        {
+          method: "POST",
+          body: formData,
+        }
+      );
       // Handle success or error based on response
       if (response.ok) {
         window.location.href = "/";

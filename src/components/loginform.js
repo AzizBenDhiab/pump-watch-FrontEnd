@@ -17,15 +17,18 @@ const LoginForm = () => {
         email: email,
         password: password,
       });
-      const response = await fetch(`http://localhost:3000/user/login`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        credentials: "include",
+      const response = await fetch(
+        `${process.env.REACT_APP_NESTJS_API_URL}/user/login`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: "include",
 
-        body,
-      });
+          body,
+        }
+      );
 
       if (!response.ok) {
         setPassword("");

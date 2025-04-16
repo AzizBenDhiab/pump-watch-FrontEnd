@@ -29,13 +29,16 @@ const Analytics = () => {
   useEffect(() => {
     const fetchPumps = async () => {
       try {
-        const response = await fetch(`http://localhost:3000/pumps`, {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          credentials: "include",
-        });
+        const response = await fetch(
+          `${process.env.REACT_APP_NESTJS_API_URL}/pumps`,
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            credentials: "include",
+          }
+        );
 
         if (response.status === 401) {
           navigate("/login");
@@ -81,7 +84,7 @@ const Analytics = () => {
   };
 
   useEffect(() => {
-    fetch("http://127.0.0.1:5000/predictions")
+    fetch(`${process.env.REACT_APP_FLASK_API_URL}/predictions`)
       .then((response) => response.json())
       .then((data) => setData(data))
       .catch((err) =>

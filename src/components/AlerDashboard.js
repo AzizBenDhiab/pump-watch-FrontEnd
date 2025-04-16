@@ -11,13 +11,16 @@ const AlertDashboard = () => {
   };
   const fetchFailureData = async () => {
     try {
-      const response = await fetch("http://localhost:3000/failures", {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        credentials: "include",
-      });
+      const response = await fetch(
+        `${process.env.REACT_APP_NESTJS_API_URL}/failures`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: "include",
+        }
+      );
       const data = await response.json();
       if (data.error) {
         console.error(data.error);
